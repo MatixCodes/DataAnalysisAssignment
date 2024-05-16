@@ -1,0 +1,24 @@
+﻿<Window x:Class="MercedesAMGDataAnalysis.Views.CustomChannelWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Create Custom Channel" Height="400" Width="300" ResizeMode="NoResize">
+
+    <Grid Background="LightGray">
+
+        <Label Content="Enter Channel Name:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,7,0,0"/>
+        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Name="ChannelNameTextBox" Margin="10,33,0,0"/>
+        <Label Content="Channel:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,66,0,0"/>
+        <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Name="FirstComboBox" Margin="10,92,0,0"/>
+        <Label Content="Channel:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="170,66,0,0"/>
+        <ComboBox VerticalAlignment="Top" Name="SecondComboBox" Margin="170,92,10,0"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,123,0,0" Width="186">
+            <RadioButton Content="+" Name="PlusRadioButton"/>
+            <RadioButton Content="-" Name="MinusRadioButton"/>
+            <RadioButton Content="*" Name="MultiplyRadioButton"/>
+            <RadioButton Content="/" Name="DivideRadioButton"/>
+        </StackPanel>
+        <Label Content="Select Operator" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,158,0,0"/>
+        <Button Content="Create Channel" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="AddCustomChannel_Click" Margin="0,228,0,128" HorizontalAlignment="Center" Width="122"/>
+    </Grid>
+</Window>
+

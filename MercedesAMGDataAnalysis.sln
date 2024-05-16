@@ -9,13 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileReader", "FileReader\Fi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileReader.Test", "FileReader.Test\FileReader.Test.csproj", "{7D6E5FE4-622A-42BA-A590-198F6B90D85D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphGeneratror", "GraphingLibrary\GraphGeneratror.csproj", "{D1F8A4A3-4966-4362-A959-6B267C0B5635}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphGeneratror", "GraphingLibrary\GraphGeneratror.csproj", "{D1F8A4A3-4966-4362-A959-6B267C0B5635}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLPredictionLibrary", "MLPredictionLibrary\MLPredictionLibrary.csproj", "{3D3C7B85-D154-4CDB-A6C2-7DBAEE457254}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLPredictionLibrary", "MLPredictionLibrary\MLPredictionLibrary.csproj", "{3D3C7B85-D154-4CDB-A6C2-7DBAEE457254}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Models", "Data.Models\Data.Models.csproj", "{114425FE-0861-4C03-BD8B-1A4C1608FAD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data.Models", "Data.Models\Data.Models.csproj", "{114425FE-0861-4C03-BD8B-1A4C1608FAD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphGenerator.Test", "GraphGenerator.Test\GraphGenerator.Test.csproj", "{CE0755DD-589C-4AAE-8909-7BB5B0A0ED24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphGenerator.Test", "GraphGenerator.Test\GraphGenerator.Test.csproj", "{CE0755DD-589C-4AAE-8909-7BB5B0A0ED24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataSetProcessing", "DataSetProcessor\DataSetProcessing.csproj", "{6ACB469E-61D5-43D4-92F0-3A7073542E8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{CE0755DD-589C-4AAE-8909-7BB5B0A0ED24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE0755DD-589C-4AAE-8909-7BB5B0A0ED24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE0755DD-589C-4AAE-8909-7BB5B0A0ED24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ACB469E-61D5-43D4-92F0-3A7073542E8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ACB469E-61D5-43D4-92F0-3A7073542E8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ACB469E-61D5-43D4-92F0-3A7073542E8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ACB469E-61D5-43D4-92F0-3A7073542E8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

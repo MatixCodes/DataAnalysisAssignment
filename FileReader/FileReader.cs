@@ -37,7 +37,7 @@ public class FileReader
             {
                 DataSet channelData = new DataSet();
                 channelData.ChannelName = channelGroup.Key;
-                channelData.Selected = true;
+                channelData.Selected = false;
                 // Get run number (assuming it's the same for all rows of a channel)
                 channelData.Outing = int.Parse(channelGroup.First()[outingColumnIndex]);
 

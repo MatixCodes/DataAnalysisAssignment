@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Data.Models\Data.Models.csproj" />
+    <ProjectReference Include="..\DataSetProcessor\DataSetProcessing.csproj" />
     <ProjectReference Include="..\FileReader\FileReader.csproj" />
     <ProjectReference Include="..\GraphingLibrary\GraphGeneratror.csproj" />
   </ItemGroup>

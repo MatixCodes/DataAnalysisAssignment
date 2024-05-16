@@ -7,13 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ScottPlot" Version="5.0.34" />
-    <PackageReference Include="ScottPlot.WPF" Version="5.0.34" />
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Data.Models\Data.Models.csproj" />
-    <ProjectReference Include="..\DataSetProcessor\DataSetProcessing.csproj" />
   </ItemGroup>
 
 </Project>

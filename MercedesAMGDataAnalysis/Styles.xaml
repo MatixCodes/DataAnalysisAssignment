@@ -25,4 +25,28 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
+    <Style TargetType="TextBox">
+        <Setter Property="Margin" Value="10"/>
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="Gray"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style TargetType="ComboBox">
+        <Setter Property="Margin" Value="10"/>
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="Gray"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style TargetType="RadioButton">
+        <Setter Property="Margin" Value="10"/>
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="12"/>
+    </Style>
+
+
 </ResourceDictionary>
