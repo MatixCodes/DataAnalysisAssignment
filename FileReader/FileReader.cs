@@ -43,26 +43,27 @@ public class FileReader
 
                 // Extract time and value arrays for the channel
                 List<double> timeList = new List<double>();
-                List<double?> valueList = new List<double?>(); // Use List<double?> to allow null values
+                List<double> valueList = new List<double>(); // Use List<double?> to allow null values
 
                 foreach (var row in channelGroup)
                 {
                     // Parse time
-                    timeList.Add(double.Parse(row[timeColumnIndex]));
-
-                    // Parse value or handle NaN and null values
-                    double? value = null;
-                    if (!string.IsNullOrWhiteSpace(row[valueColumnIndex]))
+                    if (double.TryParse(row[timeColumnIndex], out double time))
                     {
-                        if (double.TryParse(row[valueColumnIndex], out double parsedValue))
+                        timeList.Add(time);
+
+                        // Parse value or handle NaN and null values
+                        if (!string.IsNullOrWhiteSpace(row[valueColumnIndex]))
                         {
-                            if (!double.IsNaN(parsedValue))
+                            if (double.TryParse(row[valueColumnIndex], out double parsedValue))
                             {
-                                value = parsedValue;
+                                if (!double.IsNaN(parsedValue))
+                                {
+                                    valueList.Add(parsedValue);
+                                }
                             }
                         }
                     }
-                    valueList.Add(value);
                 }
 
                 channelData.TimeArray = timeList.ToArray();

@@ -63,44 +63,17 @@ public class GraphGenerator
 
         double minX = datasets.SelectMany(ds => ds.TimeArray).Min();
         double maxX = datasets.SelectMany(ds => ds.TimeArray).Max();
-        double minY = datasets.SelectMany(ds => ds.ValueArray).Min() ?? double.NaN;
-        double maxY = datasets.SelectMany(ds => ds.ValueArray).Max() ?? double.NaN;
+        double minY = datasets.SelectMany(ds => ds.ValueArray).Min();
+        double maxY = datasets.SelectMany(ds => ds.ValueArray).Max();
 
         plot.Plot.Axes.SetLimits(minX, maxX, minY, maxY);
     }
 
     private void RefreshPlot() => plot.Refresh();
 
-    public void CreateCustomChannel(string channelName, DataSet source1, DataSet source2, OperationType operationType)
+    public void CreateCustomChannel(DataSet newChannel)
     {
-        DataSetProcessor dsProcessor = new DataSetProcessor();
-        
-        if (source1 == null || source2 == null)
-            throw new ArgumentNullException("Source datasets cannot be null");
-
-        // Perform the operation to create the value array for the custom channel
-        double?[] customValues = new double?[source1.TimeArray.Length];
-        for (int i = 0; i < source1.TimeArray.Length; i++)
-        {
-            customValues[i] = dsProcessor.PerformOperation(source1.ValueArray[i], source2.ValueArray[i], operationType);
-        }
-
-        // Create the custom channel dataset
-        var customChannel = new DataSet()
-        {
-            ChannelName = channelName,
-            Outing = source1.Outing,
-            TimeArray = source2.TimeArray,
-            ValueArray = customValues,
-            Selected = true
-        };
-
-
-
-        // Add the custom channel to the list of datasets
-        Debug.WriteLine(customChannel.ChannelName);
-        Debug.WriteLine(customChannel.ValueArray);
-        datasets.Add(customChannel);
+        datasets.Add(newChannel);
         UpdateGraph();
     }
 }

@@ -16,7 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ScottPlot.WPF;
 using Data.Models;
-using static GraphGenerator;
+
 using ControlzEx.Standard;
 using MercedesAMGDataAnalysis.Views;
 
@@ -28,7 +28,8 @@ namespace MercedesAMGDataAnalysis
     public partial class MainWindow : Window
     {
         private GraphGenerator graphGenerator;
-        private List<Data.Models.DataSet> channelDataList;
+        private List<DataSet> channelDataList;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -38,13 +39,13 @@ namespace MercedesAMGDataAnalysis
             channelDataList = new List<DataSet>();
         }
 
-        private void OpenWindow_Click(object sender, RoutedEventArgs e)
+        private void OpenChannelCreationWindow_Click(object sender, RoutedEventArgs e)
         {
             CustomChannelWindow customChannelWindow = new CustomChannelWindow();
-            customChannelWindow.SetComboBoxItems(channelDataList);
+            customChannelWindow.SetData(channelDataList);
             customChannelWindow.Owner = this;
             customChannelWindow.CustomChannelCreated += CustomChannelWindow_CustomChannelCreated;
-            customChannelWindow.ShowDialog();
+            customChannelWindow.ShowDialog();        
         }
 
 
@@ -64,6 +65,7 @@ namespace MercedesAMGDataAnalysis
 
                 // Display the list of channels and checkboxes
                 listBoxChannels.ItemsSource = channelDataList;
+                CreateChannel_Button.Visibility = Visibility.Visible;
             }
         }
         private void CheckBox_Toggled(object sender, RoutedEventArgs e)
@@ -80,19 +82,7 @@ namespace MercedesAMGDataAnalysis
                 }
             }
         }
-        private void AddCustomChannel_click(object sender, RoutedEventArgs e)
-        {
-            DataSetResult result = DataSetProcessor.InterpolateDataSets(channelDataList[3], channelDataList[4],1);
-            DataSetResult result3 = DataSetProcessor.InterpolateDataSets(channelDataList[3], channelDataList[4],2);
-            DataSetResult result2 = DataSetProcessor.ResampleDataSets(channelDataList[3], channelDataList[4]);
-            
-            
-
-            graphGenerator.CreateCustomChannel("IntterpolatedChannel", result.DataSet1, result.DataSet2, OperationType.Subtraction);
-            graphGenerator.CreateCustomChannel("SplineIntterpolatedChannel", result3.DataSet1, result3.DataSet2, OperationType.Subtraction);
-            graphGenerator.CreateCustomChannel("ResampledChannel", result2.DataSet1, result2.DataSet2, OperationType.Subtraction);
-            graphGenerator.UpdateGraph();
-        }
+        
 
         private void CustomChannelWindow_CustomChannelCreated(object sender, CustomChannelEventArgs e)
         {
@@ -100,11 +90,23 @@ namespace MercedesAMGDataAnalysis
             int firstComboBoxSelection = e.FirstComboBoxSelection;
             int secondComboBoxSelection = e.SecondComboBoxSelection;
             OperationType selectedOperator = e.SelectedOperator;
+            DataConversionType dataConversionType = e.DataConversionType;
 
-            DataSetResult result = DataSetProcessor.InterpolateDataSets(channelDataList[firstComboBoxSelection], channelDataList[secondComboBoxSelection], 1);
-            graphGenerator.CreateCustomChannel(channelName, result.DataSet1, result.DataSet2,selectedOperator);
+            //foreach (double item in channelDataList[firstComboBoxSelection].ValueArray) { Debug.WriteLine(item); }
+
+            DataSet result = DataSetProcessor.ConvertData(channelName,channelDataList[firstComboBoxSelection], channelDataList[secondComboBoxSelection],selectedOperator, dataConversionType);
+            channelDataList.Add(result);
+            graphGenerator.CreateCustomChannel(result);
+            RefreshListBoxChannels();
 
 
+        }
+
+        private void RefreshListBoxChannels()
+        {
+            // Update the ItemsSource of listBoxChannels
+            listBoxChannels.ItemsSource = null; // Clear the existing ItemsSource
+            listBoxChannels.ItemsSource = channelDataList; // Set the updated ItemsSource
         }
     }
 }

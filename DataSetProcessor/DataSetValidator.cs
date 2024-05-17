@@ -11,22 +11,22 @@ public class DataSetValidator
 {
     
 
-    public bool CheckForNaNValues(DataSet dataSet)
-    {
-        if (dataSet.ValueArray == null)
-        {
-            return false;
-        }
+    //public bool CheckForNaNValues(DataSet dataSet)
+    //{
+    //    if (dataSet.ValueArray == null)
+    //    {
+    //        return false;
+    //    }
 
-        foreach (var value in dataSet.ValueArray)
-        {
-            if (!value.HasValue || double.IsNaN(value.Value) || double.IsInfinity(value.Value))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+    //    foreach (var value in dataSet.ValueArray)
+    //    {
+    //        if (!value.HasValue || double.IsNaN(value.Value) || double.IsInfinity(value.Value))
+    //        {
+    //            return false;
+    //        }
+    //    }
+    //    return true;
+    //}
 
     public bool AreDataSetsSameLength(DataSet dataSet1, DataSet dataSet2)
     {

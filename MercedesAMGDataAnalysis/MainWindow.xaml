@@ -9,8 +9,8 @@
     
     <Grid>
         <Button Content="Select File" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="SelectFile_Click"/>
-        <Button Content="GenerateChannels" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="AddCustomChannel_click" Margin="121,10,0,826"/>
-        <Button Content="Add Custom Channel" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="OpenWindow_Click" Margin="1389,370,0,466"/>
+        
+        <Button Content="Create Channel" Name="CreateChannel_Button" Visibility="Hidden" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="OpenChannelCreationWindow_Click" Margin="1389,370,0,466"/>
        
         <wpf:WpfPlot x:Name="wpfPlot1" Margin="27,92,255,53"/>
 
