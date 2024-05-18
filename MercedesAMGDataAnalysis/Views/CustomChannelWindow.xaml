@@ -8,9 +8,9 @@
         <Label Content="Enter Channel Name:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,7,0,0"/>
         <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Name="ChannelNameTextBox" Margin="10,33,0,0"/>
         <Label Content="Channel:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,66,0,0"/>
-        <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Name="FirstComboBox" Margin="10,92,0,0"/>
+        <ComboBox HorizontalAlignment="Left" SelectionChanged="ChannelSelectionComboBoxs_SelectionChanged" VerticalAlignment="Top" Width="120" Name="FirstChannelComboBox" Margin="10,92,0,0" ItemContainerStyle="{StaticResource HoverGrayComboBoxItemStyle}"/>
         <Label Content="Channel:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="170,66,0,0"/>
-        <ComboBox VerticalAlignment="Top" Name="SecondComboBox" Margin="170,92,10,0"/>
+        <ComboBox VerticalAlignment="Top" SelectionChanged="ChannelSelectionComboBoxs_SelectionChanged" Name="SecondChannelComboBox" Margin="170,92,10,0" ItemContainerStyle="{StaticResource HoverGrayComboBoxItemStyle}"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,123,0,0" Width="186">
             <RadioButton Content="+" Name="PlusRadioButton"/>
             <RadioButton Content="-" Name="MinusRadioButton"/>
@@ -21,9 +21,11 @@
         <Button Content="Check Data" Name="CheckDataButton" Visibility="Visible" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="CheckDataButton_Click"  Margin="17,196,0,0" Width="93" Height="28" VerticalAlignment="Top"/>
 
         <Label Content="Data does not match, choose you function:" Name="AlignmentLabel" Visibility="Collapsed" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="38,236,0,0"/>
-        <ComboBox Name="CorrectionTypeComboBox" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0,274,0,0"/>
+        <ComboBox Name="CorrectionTypeComboBox" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0,274,0,0" ItemContainerStyle="{StaticResource HoverGrayComboBoxItemStyle}"/>
         <Button Content="Create Channel" Name="AddCustomChannelButton" Visibility="Collapsed" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="CreateCustomChannelButton_Click" Margin="0,315,0,0" Width="122" Height="34" VerticalAlignment="Top" HorizontalAlignment="Center"/>
 
+
+        <Label Content="" Name="ErrorLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="17,361,0,0"/>
 
 
     </Grid>

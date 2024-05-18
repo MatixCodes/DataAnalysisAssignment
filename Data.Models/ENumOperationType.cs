@@ -11,6 +11,7 @@ namespace Data.Models
         Addition,
         Subtraction,
         Multiplication,
-        Division
+        Division,
+        None
     }
 }

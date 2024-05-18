@@ -15,9 +15,6 @@ namespace Data.Models
         [Description("Cubic Spline Interpolation")]
         CubicSplineInterpolation,
 
-        [Description("Resample")]
-        Resample,
-
         [Description("None")]
         None
     }

@@ -19,6 +19,7 @@ using Data.Models;
 
 using ControlzEx.Standard;
 using MercedesAMGDataAnalysis.Views;
+using static GraphGenerator;
 
 namespace MercedesAMGDataAnalysis
 {
@@ -61,11 +62,14 @@ namespace MercedesAMGDataAnalysis
                 // Read data from the selected file
                 FileReader fileReader = new FileReader();
                 channelDataList = fileReader.ReadFileData(selectedFilePath);
-                graphGenerator.CreateSampleGraph(channelDataList);
+                graphGenerator.CreateGraph(channelDataList);
 
                 // Display the list of channels and checkboxes
                 listBoxChannels.ItemsSource = channelDataList;
                 CreateChannel_Button.Visibility = Visibility.Visible;
+
+                GenerateRequiredChannelAndCondition("Channel 7", channelDataList[4], channelDataList[3], OperationType.Subtraction, DataConversionType.LinearInterpolation, ComparisonOperator.LessThan, 0);
+                graphGenerator.HighlightPoints("Channel 2",ComparisonOperator.LessThan,-0.5);
             }
         }
         private void CheckBox_Toggled(object sender, RoutedEventArgs e)
@@ -97,16 +101,24 @@ namespace MercedesAMGDataAnalysis
             DataSet result = DataSetProcessor.ConvertData(channelName,channelDataList[firstComboBoxSelection], channelDataList[secondComboBoxSelection],selectedOperator, dataConversionType);
             channelDataList.Add(result);
             graphGenerator.CreateCustomChannel(result);
+            graphGenerator.HighlightPoints(channelName, ComparisonOperator.LessThan, 0);
+
             RefreshListBoxChannels();
-
-
         }
-
         private void RefreshListBoxChannels()
         {
             // Update the ItemsSource of listBoxChannels
             listBoxChannels.ItemsSource = null; // Clear the existing ItemsSource
             listBoxChannels.ItemsSource = channelDataList; // Set the updated ItemsSource
+        }
+
+        private void GenerateRequiredChannelAndCondition(string channelName,DataSet ds1,DataSet ds2,OperationType operation,DataConversionType conversionType,ComparisonOperator compOperator,int threshold)
+        {
+            DataSet result = DataSetProcessor.ConvertData(channelName, ds1, ds2, operation, conversionType);
+            channelDataList.Add(result);
+            graphGenerator.CreateCustomChannel(result);
+            graphGenerator.HighlightPoints(channelName,compOperator, threshold);
+            RefreshListBoxChannels();
         }
     }
 }

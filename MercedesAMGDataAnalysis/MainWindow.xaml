@@ -23,13 +23,25 @@
                           Checked="CheckBox_Toggled"
                           Unchecked="CheckBox_Toggled" />
                         <TextBlock Margin="5,0,0,0">
-                            <Run Text="Channel" FontWeight="Bold" />
-                            <Run Text="{Binding ChannelName}" />        
+                    <Run Text="Channel" FontWeight="Bold" />
+                    <Run Text="{Binding ChannelName}" />
                         </TextBlock>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Control.Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
         </ListBox>
+
 
     </Grid>
 </Window>
