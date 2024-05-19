@@ -36,11 +36,9 @@ namespace MercedesAMGDataAnalysis.Views
         public void SetData(List<DataSet> dataSetList)
         {
             dataSets = dataSetList;
-            // Set items source for the ComboBoxes
             FirstChannelComboBox.ItemsSource = dataSetList;
             SecondChannelComboBox.ItemsSource = dataSetList;
 
-            // Set display member path to indicate which property should be displayed
             FirstChannelComboBox.DisplayMemberPath = "ChannelName";
             SecondChannelComboBox.DisplayMemberPath = "ChannelName";
 

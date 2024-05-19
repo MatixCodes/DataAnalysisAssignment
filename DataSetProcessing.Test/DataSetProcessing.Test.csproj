@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0-windows</TargetFramework>
@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FileReader\FileReader.csproj" />
+    <ProjectReference Include="..\DataSetProcessor\DataSetProcessing.csproj" />
   </ItemGroup>
 
 </Project>

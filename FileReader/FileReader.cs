@@ -14,10 +14,12 @@ public class FileReader : IFileReader
         ChannelDataList.Clear();
         ReadFileData(filePath);
     }
+
     public List<DataSet> GetResults()
     {
         return ChannelDataList;
     }
+
     private void ReadFileData(string filePath)
     {
         try
@@ -32,9 +34,19 @@ public class FileReader : IFileReader
 
             GroupAndProcessData(fileData, channelColumnIndex, timeColumnIndex, valueColumnIndex, outingColumnIndex);
         }
-        catch (Exception ex)
+        catch (FileNotFoundException ex)
         {
             Debug.WriteLine($"Error: {ex.Message}");
+            throw;
+        }
+        catch (InvalidOperationException ex)
+        {
+            Debug.WriteLine($"Error: {ex.Message}");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Unexpected error: {ex.Message}");
             throw;
         }
     }
@@ -72,18 +84,26 @@ public class FileReader : IFileReader
 
     private void GroupAndProcessData(List<List<string>> fileData, int channelColumnIndex, int timeColumnIndex, int valueColumnIndex, int outingColumnIndex)
     {
-        var groupedData = fileData.Skip(1).GroupBy(row => row[channelColumnIndex]);
-        foreach (var channelGroup in groupedData)
+        try
         {
-            var channelData = new DataSet
+            var groupedData = fileData.Skip(1).GroupBy(row => row[channelColumnIndex]);
+            foreach (var channelGroup in groupedData)
             {
-                ChannelName = "Channel " + channelGroup.Key,
-                Selected = false,
-                Outing = int.Parse(channelGroup.First()[outingColumnIndex])
-            };
+                var channelData = new DataSet
+                {
+                    ChannelName = "Channel " + channelGroup.Key,
+                    Selected = false,
+                    Outing = int.Parse(channelGroup.First()[outingColumnIndex])
+                };
 
-            ExtractTimeAndValueArrays(channelGroup, timeColumnIndex, valueColumnIndex, channelData);
-            ChannelDataList.Add(channelData);
+                ExtractTimeAndValueArrays(channelGroup, timeColumnIndex, valueColumnIndex, channelData);
+                ChannelDataList.Add(channelData);
+            }
+        }
+        catch (FormatException ex)
+        {
+            Debug.WriteLine($"Data format error: {ex.Message}");
+            throw new InvalidOperationException("Invalid data format in the file.", ex);
         }
     }
 
@@ -96,6 +116,8 @@ public class FileReader : IFileReader
         {
             if (double.TryParse(row[timeColumnIndex], out double time))
                 timeList.Add(time);
+            else
+                throw new InvalidOperationException("Invalid time value encountered.");
 
             if (double.TryParse(row[valueColumnIndex], out double parsedValue))
                 valueList.Add(parsedValue);
@@ -174,7 +196,7 @@ public class FileReader : IFileReader
                 else if (nextValue.HasValue)
                     valueList.Add(nextValue.Value);
                 else
-                    continue; 
+                    continue;
             }
             else
                 valueList.Add(currentValue);

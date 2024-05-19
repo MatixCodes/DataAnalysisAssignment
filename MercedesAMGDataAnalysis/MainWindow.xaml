@@ -5,7 +5,8 @@
         Title="Mercedes AMG Data Analysis"
         Height="823" Width="1600"
         BorderBrush="LightGray"
-        Background="DarkSlateGray">
+        Background="DarkSlateGray"
+        ResizeMode="NoResize">
 
     <Grid>
         <Grid.ColumnDefinitions>

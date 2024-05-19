@@ -21,11 +21,7 @@ namespace MercedesAMGDataAnalysis.Views
         public void SetData(List<DataSet> dataSetList)
         {
             dataSets = dataSetList;
-            // Set items source for the ComboBoxes
             ConditionChannelComboBox.ItemsSource = dataSetList;
-
-
-            // Set display member path to indicate which property should be displayed
             ConditionChannelComboBox.DisplayMemberPath = "ChannelName";
         }
 
@@ -66,12 +62,10 @@ namespace MercedesAMGDataAnalysis.Views
         }
 
         private void ThresholdTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            // Get the TextBox content and caret position
+        {            
             TextBox textBox = sender as TextBox;
             string text = textBox.Text.Insert(textBox.CaretIndex, e.Text);
 
-            // Check if the input is a valid number with at most one decimal point
             if (!(double.TryParse(text, out double number) || (text.Length == 1 && text == "-") || (text.Count(c => c == '.') <= 1 && text.All(c => char.IsDigit(c) || c == '.'))))
             {
                 e.Handled = true;

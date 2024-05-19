@@ -22,7 +22,7 @@ namespace MercedesAMGDataAnalysis
             channelDataList = new List<DataSet>();
         }
 
-        #region EventHandlers
+       
 
         private void OpenChannelCreationWindow_Click(object sender, RoutedEventArgs e)
         {
@@ -57,15 +57,12 @@ namespace MercedesAMGDataAnalysis
 
         private void SelectFile_Click(object sender, RoutedEventArgs e)
         {
-            // Show file dialog to select a file
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
             {
-                // Get the selected file path
                 string selectedFilePath = openFileDialog.FileName;
 
-
-               fileReader.Initialize(selectedFilePath);
+                fileReader.Initialize(selectedFilePath);
 
 
                 if (fileReader.InvalidValuesExist())
@@ -133,9 +130,7 @@ namespace MercedesAMGDataAnalysis
         {
             fileReader.RemoveMissingValues();
         }
-        #endregion
-
-        #region Private Methods
+       
         private void RefreshListBoxChannels()
         {
             listBoxChannels.ItemsSource = null;
@@ -150,7 +145,9 @@ namespace MercedesAMGDataAnalysis
             graphGenerator.HighlightPoints(channelName, compOperator, threshold);
             RefreshListBoxChannels();
             graphGenerator.HighlightPoints("Channel 2", ComparisonOperator.LessThan, -0.5);
+            channelDataList[1].Selected = !channelDataList[1].Selected;
+            graphGenerator.ToggleDataSetVisibility(channelDataList[1]);
         }
-        #endregion
+        
     }
 }
