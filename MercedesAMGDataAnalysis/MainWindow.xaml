@@ -5,7 +5,7 @@
         Title="Mercedes AMG Data Analysis"
         Height="823" Width="1600"
         BorderBrush="LightGray"
-        Background="DarkSlateGray"
+        Background="WhiteSmoke"
         ResizeMode="NoResize">
 
     <Grid>
@@ -13,41 +13,29 @@
             <ColumnDefinition Width="1471*"/>
             <ColumnDefinition Width="129*"/>
         </Grid.ColumnDefinitions>
-        <Button Content="Select File" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="SelectFile_Click" Margin="25,24,0,0" Width="131" Height="45" VerticalAlignment="Top"/>
+        <Button Content="Import File" Padding="5" Style="{StaticResource RoundedButtonPrimary}" Click="SelectFile_Click" Margin="25,0,1279,726" Height="45" VerticalAlignment="Bottom"/>
 
-        <Button Content="Create Channel" Name="CreateChannel_Button" Visibility="Collapsed" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="OpenChannelCreationWindow_Click" Margin="928,24,0,0" Width="180" Height="45" VerticalAlignment="Top"/>
-        <Button Content="Create Condition" Name="CreateCondition_Button" Visibility="Collapsed" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="OpenConditionCreatorWindow_Click" Margin="1148,24,0,0" Width="180" Height="45" VerticalAlignment="Top"/>
+        <Button Content="Create Channel" Name="CreateChannel_Button" Visibility="Collapsed" Padding="5" Style="{StaticResource RoundedButtonSecondary}" Click="OpenChannelCreationWindow_Click" Margin="917,0,347,726" Height="45" VerticalAlignment="Bottom"/>
+        <Button Content="Create Condition" Name="CreateCondition_Button" Visibility="Collapsed" Padding="5" Style="{StaticResource RoundedButtonSecondary}" Click="OpenConditionCreatorWindow_Click" Margin="1143,0,128,726" Height="45" VerticalAlignment="Bottom"/>
 
         <wpf:WpfPlot x:Name="wpfPlot1" Margin="25,0,128,22" Height="684" VerticalAlignment="Bottom"/>
-
-        <ListBox x:Name="listBoxChannels" SelectionMode="Multiple" Margin="1380,101,28,460" Grid.ColumnSpan="2">
+        <Label Content="Data Channels" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="1343,86,0,0" Grid.ColumnSpan="2" Style="{StaticResource ChannelLabel}" Width="222" />
+        <ListBox x:Name="listBoxChannels" SelectionMode="Multiple" Margin="1348,140,23,325" Grid.ColumnSpan="2" Background="Transparent">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Margin="5">
                         <CheckBox IsChecked="{Binding Selected, Mode=OneWay}"
-                          Style="{StaticResource DarkCheckBox}"
-                          Checked="CheckBox_Toggled"
-                          Unchecked="CheckBox_Toggled" />
-                        <TextBlock Margin="5,0,0,0">
-                    <Run Text="{Binding ChannelName}" FontWeight="Bold" />
+                                      Checked="CheckBox_Toggled"
+                                      Unchecked="CheckBox_Toggled"
+                                      FontSize="16"
+                                      Padding="10" />
+                        <TextBlock Margin="5,0,0,0" FontSize="16">
+                                <Run Text="{Binding ChannelName}" FontWeight="Bold" />
                         </TextBlock>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Control.Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListBoxItem">
-                                <ContentPresenter />
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListBox.ItemContainerStyle>
         </ListBox>
-
-
     </Grid>
 </Window>
 

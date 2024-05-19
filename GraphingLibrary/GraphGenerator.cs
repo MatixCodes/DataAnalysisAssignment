@@ -52,7 +52,7 @@ public class GraphGenerator : IGraphGenerator
     private void AddScatterPlot(DataSet dataset)
     {
         var scatter = plot.Plot.Add.Scatter(dataset.TimeArray, dataset.ValueArray);
-        scatter.LegendText = $"Channel {dataset.ChannelName}";
+        scatter.LegendText = $"{dataset.ChannelName}";
         scatterPlots[dataset.ChannelName] = scatter;
     }
 
@@ -177,13 +177,13 @@ public class GraphGenerator : IGraphGenerator
 
                     if (fixedPointX != null && fixedPointY != null && fixedPointX.Value > interpolatedTime)
                     {
-                        HighlightPoint(channelName, fixedPointX.Value, fixedPointY.Value, $"{comparisonOperator} {thresholdValue} (Channel {channelName}) - Fixed Point", isVisible);
-                        HighlightPoint(channelName, interpolatedTime, thresholdValue, $"{comparisonOperator} {thresholdValue} (Channel {channelName}) - Interpolated", isVisible);
+                        HighlightPoint(channelName, fixedPointX.Value, fixedPointY.Value, $"{comparisonOperator} {thresholdValue} ({channelName}) - Fixed Point", isVisible);
+                        HighlightPoint(channelName, interpolatedTime, thresholdValue, $"{comparisonOperator} {thresholdValue} ({channelName}) - Interpolated", isVisible);
                         foundLinePoint = true;
                     }
                     else if (fixedPointX == null || fixedPointY == null)
                     {
-                        HighlightPoint(channelName, interpolatedTime, thresholdValue, $"{comparisonOperator} {thresholdValue} (Channel {channelName}) - Interpolated", isVisible);
+                        HighlightPoint(channelName, interpolatedTime, thresholdValue, $"{comparisonOperator} {thresholdValue} ({channelName}) - Interpolated", isVisible);
                         foundLinePoint = true;
                     }
                 }
@@ -192,7 +192,7 @@ public class GraphGenerator : IGraphGenerator
 
         if (fixedPointX != null && fixedPointY != null && foundFixedPoint && !foundLinePoint)
         {
-            HighlightPoint(channelName, fixedPointX.Value, fixedPointY.Value, $"{comparisonOperator} {thresholdValue} (Channel {channelName}) - Fixed Point", isVisible);
+            HighlightPoint(channelName, fixedPointX.Value, fixedPointY.Value, $"{comparisonOperator} {thresholdValue} ({channelName}) - Fixed Point", isVisible);
         }
 
         RefreshPlot();

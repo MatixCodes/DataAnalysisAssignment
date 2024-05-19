@@ -18,7 +18,7 @@
         </StackPanel>
         <Label Content="Threshold Value:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="7,156,0,0"/>
         <TextBox Name="ThresholdTextBox" PreviewTextInput="ThresholdTextBox_PreviewTextInput" Margin="131,161,112,0" Height="31" VerticalAlignment="Top"/>
-        <Button Content="Create" Name="CreateConditionButton" Visibility="Visible" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="CreateConditionButton_Click" Margin="77,206,0,0" Width="122" Height="34" VerticalAlignment="Top"/>
+        <Button Content="Create" Name="CreateConditionButton" Visibility="Visible" Padding="5" Style="{StaticResource RoundedButtonPrimary}" Click="CreateConditionButton_Click" Margin="78,218,78,0" Height="34" VerticalAlignment="Top"/>
         <Label Content="" Name="ErrorLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="7,252,0,0" Foreground="Red" Height="18" Width="220" />
     </Grid>
 </Window>
