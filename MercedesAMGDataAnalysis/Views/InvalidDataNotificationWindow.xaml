@@ -1,0 +1,15 @@
+﻿<Window x:Class="MercedesAMGDataAnalysis.Views.InvalidDataNotificationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MercedesAMGDataAnalysis.Views"
+        mc:Ignorable="d"
+        Title="Notification" Height="205" Width="241" ResizeMode="NoResize">
+    <Grid>
+        <Label Content="Channels with missing values found." HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0"/>
+        <Button x:Name="RemoveValuesButton" Content="Remove Values" Padding="5" Style="{StaticResource InvalidDataButton}" Click="RemoveValuesButton_Click" Margin="66,90,65,0" Height="25" VerticalAlignment="Top" />
+        <Button x:Name="PredictValuesButton" Content="Predict Values" Padding="5" Style="{StaticResource InvalidDataButton}" Click="PredictValuesButton_Click" Margin="66,60,65,0" Height="25" VerticalAlignment="Top" />
+        <Button x:Name="RemoveValues" Content="Ignore Values" Padding="5" Style="{StaticResource InvalidDataButton}" Click="IgnoreValuesButton_Click" Margin="66,120,65,0" Height="26" VerticalAlignment="Top" />
+    </Grid>
+</Window>

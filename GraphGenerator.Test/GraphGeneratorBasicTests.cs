@@ -14,7 +14,7 @@ namespace GraphGeneration.Test
             var graphGenerator = new GraphGenerator(plot);
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => graphGenerator.CreateSampleGraph(null));
+            Assert.Throws<ArgumentNullException>(() => graphGenerator.CreateGraph(null));
         }
       
     } 

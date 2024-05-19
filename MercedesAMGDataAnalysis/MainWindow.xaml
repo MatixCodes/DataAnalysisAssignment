@@ -3,18 +3,23 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
          xmlns:wpf="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
         Title="Mercedes AMG Data Analysis"
-        Height="900" Width="1600"
+        Height="823" Width="1600"
         BorderBrush="LightGray"
         Background="DarkSlateGray">
-    
-    <Grid>
-        <Button Content="Select File" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="SelectFile_Click"/>
-        
-        <Button Content="Create Channel" Name="CreateChannel_Button" Visibility="Hidden" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="OpenChannelCreationWindow_Click" Margin="1389,370,0,466"/>
-       
-        <wpf:WpfPlot x:Name="wpfPlot1" Margin="27,92,255,53"/>
 
-        <ListBox x:Name="listBoxChannels" SelectionMode="Multiple" Margin="1374,49,34,613">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1471*"/>
+            <ColumnDefinition Width="129*"/>
+        </Grid.ColumnDefinitions>
+        <Button Content="Select File" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="SelectFile_Click" Margin="25,24,0,0" Width="131" Height="45" VerticalAlignment="Top"/>
+
+        <Button Content="Create Channel" Name="CreateChannel_Button" Visibility="Collapsed" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="OpenChannelCreationWindow_Click" Margin="928,24,0,0" Width="180" Height="45" VerticalAlignment="Top"/>
+        <Button Content="Create Condition" Name="CreateCondition_Button" Visibility="Collapsed" Padding="5" Style="{StaticResource SelectFileButtonStyle}" Click="OpenConditionCreatorWindow_Click" Margin="1148,24,0,0" Width="180" Height="45" VerticalAlignment="Top"/>
+
+        <wpf:WpfPlot x:Name="wpfPlot1" Margin="25,0,128,22" Height="684" VerticalAlignment="Bottom"/>
+
+        <ListBox x:Name="listBoxChannels" SelectionMode="Multiple" Margin="1380,101,28,460" Grid.ColumnSpan="2">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -23,8 +28,7 @@
                           Checked="CheckBox_Toggled"
                           Unchecked="CheckBox_Toggled" />
                         <TextBlock Margin="5,0,0,0">
-                    <Run Text="Channel" FontWeight="Bold" />
-                    <Run Text="{Binding ChannelName}" />
+                    <Run Text="{Binding ChannelName}" FontWeight="Bold" />
                         </TextBlock>
                     </StackPanel>
                 </DataTemplate>

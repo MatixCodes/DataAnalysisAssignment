@@ -12,7 +12,7 @@ namespace MercedesAMGDataAnalysis.Views
     public partial class CustomChannelWindow : Window
     {
         public event EventHandler<CustomChannelEventArgs> CustomChannelCreated;
-        public List<string> ChannelDataList { get; private set; }
+        
         private List<DataSet> dataSets;
         private DataSetValidator dsValidator = new DataSetValidator();
 

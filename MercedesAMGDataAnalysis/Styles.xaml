@@ -67,5 +67,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-
+    <Style x:Key="InvalidDataButton" TargetType="Button">
+        <Setter Property="FontSize" Value="10"/>
+    </Style>
 </ResourceDictionary>

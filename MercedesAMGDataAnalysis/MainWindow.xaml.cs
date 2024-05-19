@@ -1,54 +1,59 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using ScottPlot.WPF;
 using Data.Models;
-
-using ControlzEx.Standard;
 using MercedesAMGDataAnalysis.Views;
-using static GraphGenerator;
+
 
 namespace MercedesAMGDataAnalysis
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        private GraphGenerator graphGenerator;
+        private readonly IGraphGenerator graphGenerator;
+        private readonly IFileReader fileReader;
         private List<DataSet> channelDataList;
-
-        public MainWindow()
+        public MainWindow(IGraphGenerator graphGenerator, IFileReader fileReader)
         {
             InitializeComponent();
-
-
-            graphGenerator = new GraphGenerator(wpfPlot1);
+            this.graphGenerator = graphGenerator;
+            this.fileReader = fileReader;
             channelDataList = new List<DataSet>();
         }
+
+        #region EventHandlers
 
         private void OpenChannelCreationWindow_Click(object sender, RoutedEventArgs e)
         {
             CustomChannelWindow customChannelWindow = new CustomChannelWindow();
-            customChannelWindow.SetData(channelDataList);
             customChannelWindow.Owner = this;
+            customChannelWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            customChannelWindow.SetData(channelDataList);
+
             customChannelWindow.CustomChannelCreated += CustomChannelWindow_CustomChannelCreated;
-            customChannelWindow.ShowDialog();        
+            customChannelWindow.ShowDialog();
         }
 
+        private void OpenConditionCreatorWindow_Click(object sender, RoutedEventArgs e)
+        {
+            ConditonCreatorWindow conditionCreatorWindow = new ConditonCreatorWindow();
+            conditionCreatorWindow.Owner = this;
+            conditionCreatorWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            conditionCreatorWindow.SetData(channelDataList);
+            conditionCreatorWindow.ConditionCreated += ConditionCreatorWindow_ConditionCreated;
+            conditionCreatorWindow.ShowDialog();
+        }
+
+        private void OpenInvalidDataNotificationWindow()
+        {
+            InvalidDataNotificationWindow invalidDataNotificationWindow = new InvalidDataNotificationWindow();
+            invalidDataNotificationWindow.Owner = this;
+            invalidDataNotificationWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            invalidDataNotificationWindow.RemoveValuesClicked += NotificationWindow_RemoveValuesClicked;
+            invalidDataNotificationWindow.PredictValuesClicked += NotificationWindow_PredictValuesClicked;
+            invalidDataNotificationWindow.ShowDialog();
+        }
 
         private void SelectFile_Click(object sender, RoutedEventArgs e)
         {
@@ -59,19 +64,27 @@ namespace MercedesAMGDataAnalysis
                 // Get the selected file path
                 string selectedFilePath = openFileDialog.FileName;
 
-                // Read data from the selected file
-                FileReader fileReader = new FileReader();
-                channelDataList = fileReader.ReadFileData(selectedFilePath);
-                graphGenerator.CreateGraph(channelDataList);
 
-                // Display the list of channels and checkboxes
+               fileReader.Initialize(selectedFilePath);
+
+
+                if (fileReader.InvalidValuesExist())
+                {
+                    OpenInvalidDataNotificationWindow();
+                }
+
+                channelDataList = fileReader.GetResults();
+                graphGenerator.CreateGraph(channelDataList,wpfPlot1);
+
+
                 listBoxChannels.ItemsSource = channelDataList;
                 CreateChannel_Button.Visibility = Visibility.Visible;
+                CreateCondition_Button.Visibility = Visibility.Visible;
 
                 GenerateRequiredChannelAndCondition("Channel 7", channelDataList[4], channelDataList[3], OperationType.Subtraction, DataConversionType.LinearInterpolation, ComparisonOperator.LessThan, 0);
-                graphGenerator.HighlightPoints("Channel 2",ComparisonOperator.LessThan,-0.5);
             }
         }
+
         private void CheckBox_Toggled(object sender, RoutedEventArgs e)
         {
             if (sender is CheckBox checkBox)
@@ -82,12 +95,10 @@ namespace MercedesAMGDataAnalysis
                 if (index >= 0)
                 {
                     channelDataList[index].Selected = !channelDataList[index].Selected;
-                    graphGenerator.UpdateGraph();
+                    graphGenerator.ToggleDataSetVisibility(selectedChannel);
                 }
             }
         }
-        
-
         private void CustomChannelWindow_CustomChannelCreated(object sender, CustomChannelEventArgs e)
         {
             string channelName = e.ChannelName;
@@ -96,29 +107,50 @@ namespace MercedesAMGDataAnalysis
             OperationType selectedOperator = e.SelectedOperator;
             DataConversionType dataConversionType = e.DataConversionType;
 
-            //foreach (double item in channelDataList[firstComboBoxSelection].ValueArray) { Debug.WriteLine(item); }
-
-            DataSet result = DataSetProcessor.ConvertData(channelName,channelDataList[firstComboBoxSelection], channelDataList[secondComboBoxSelection],selectedOperator, dataConversionType);
+            DataSet result = DataSetProcessor.ConvertData(channelName, channelDataList[firstComboBoxSelection], channelDataList[secondComboBoxSelection], selectedOperator, dataConversionType);
             channelDataList.Add(result);
             graphGenerator.CreateCustomChannel(result);
-            graphGenerator.HighlightPoints(channelName, ComparisonOperator.LessThan, 0);
 
             RefreshListBoxChannels();
         }
-        private void RefreshListBoxChannels()
+
+        private void ConditionCreatorWindow_ConditionCreated(object sender, ConditionCreatedEventArgs e)
         {
-            // Update the ItemsSource of listBoxChannels
-            listBoxChannels.ItemsSource = null; // Clear the existing ItemsSource
-            listBoxChannels.ItemsSource = channelDataList; // Set the updated ItemsSource
+            string channelName = e.ChannelName;
+            ComparisonOperator selectedOperator = e.SelectedOperator;
+            float threshold = e.Threshold;
+
+            graphGenerator.HighlightPoints(channelName, selectedOperator, threshold);
+            RefreshListBoxChannels();
         }
 
-        private void GenerateRequiredChannelAndCondition(string channelName,DataSet ds1,DataSet ds2,OperationType operation,DataConversionType conversionType,ComparisonOperator compOperator,int threshold)
+        private void NotificationWindow_PredictValuesClicked(object? sender, EventArgs e)
+        {
+            fileReader.PredictMissingValues();
+        }
+
+        private void NotificationWindow_RemoveValuesClicked(object? sender, EventArgs e)
+        {
+            fileReader.RemoveMissingValues();
+        }
+        #endregion
+
+        #region Private Methods
+        private void RefreshListBoxChannels()
+        {
+            listBoxChannels.ItemsSource = null;
+            listBoxChannels.ItemsSource = channelDataList;
+        }
+
+        private void GenerateRequiredChannelAndCondition(string channelName, DataSet ds1, DataSet ds2, OperationType operation, DataConversionType conversionType, ComparisonOperator compOperator, int threshold)
         {
             DataSet result = DataSetProcessor.ConvertData(channelName, ds1, ds2, operation, conversionType);
             channelDataList.Add(result);
             graphGenerator.CreateCustomChannel(result);
-            graphGenerator.HighlightPoints(channelName,compOperator, threshold);
+            graphGenerator.HighlightPoints(channelName, compOperator, threshold);
             RefreshListBoxChannels();
+            graphGenerator.HighlightPoints("Channel 2", ComparisonOperator.LessThan, -0.5);
         }
+        #endregion
     }
 }

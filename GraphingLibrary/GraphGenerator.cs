@@ -5,56 +5,84 @@ using ScottPlot;
 using ScottPlot.Plottables;
 using ScottPlot.WPF;
 using Data.Models;
-using System.Diagnostics;
-using ScottPlot.Colormaps;
 
-public class GraphGenerator
+
+public class GraphGenerator : IGraphGenerator
 {
-    private readonly WpfPlot plot;
+    private WpfPlot plot;
     private readonly List<DataSet> datasets;
-    
 
-    public GraphGenerator(WpfPlot plot)
+    private readonly Dictionary<string, Scatter> scatterPlots;
+    private readonly Dictionary<string, List<IPlottable>> markersAndAnnotations;
+
+
+    public GraphGenerator()
     {
-        this.plot = plot ?? throw new ArgumentNullException(nameof(plot));
+        plot = new WpfPlot();
         datasets = new List<DataSet>();
+        scatterPlots = new Dictionary<string, Scatter>();
+        markersAndAnnotations = new Dictionary<string, List<IPlottable>>();
     }
 
-    public void CreateGraph(List<DataSet> initialDatasets)
+
+    public void CreateGraph(List<DataSet> initialDatasets, WpfPlot wpfPlot)
     {
+        plot = wpfPlot;
+
         if (initialDatasets == null)
             throw new ArgumentNullException(nameof(initialDatasets));
 
         datasets.Clear();
         datasets.AddRange(initialDatasets);
-        PlotSelectedDatasets();
-        FocusOnData();
+        InitializeScatterPlots();
+        UpdateGraph();
+    }
+
+    private void InitializeScatterPlots()
+    {
+        scatterPlots.Clear();
+        markersAndAnnotations.Clear();
+        plot.Plot.Clear();
+
+        foreach (var dataset in datasets)
+        {
+            AddScatterPlot(dataset);
+            markersAndAnnotations[dataset.ChannelName] = new List<IPlottable>();
+        }
+    }
+
+    private void AddScatterPlot(DataSet dataset)
+    {
+        var scatter = plot.Plot.Add.Scatter(dataset.TimeArray, dataset.ValueArray);
+        scatter.LegendText = $"Channel {dataset.ChannelName}";
+        scatterPlots[dataset.ChannelName] = scatter;
+    }
+
+    public void ToggleDataSetVisibility(DataSet dataset)
+    {
+        if (scatterPlots.ContainsKey(dataset.ChannelName))
+        {
+            scatterPlots[dataset.ChannelName].IsVisible = dataset.Selected;
+
+            if (markersAndAnnotations.ContainsKey(dataset.ChannelName))
+            {
+                foreach (var marker in markersAndAnnotations[dataset.ChannelName])
+                {
+                    marker.IsVisible = dataset.Selected;
+                }
+            }
+        }
         RefreshPlot();
     }
 
     public void UpdateGraph()
     {
-        PlotSelectedDatasets();
+        foreach (var dataset in datasets)
+        {
+            ToggleDataSetVisibility(dataset);
+        }
         FocusOnData();
         RefreshPlot();
-    }
-
-    private void PlotSelectedDatasets()
-    {
-        plot.Plot.Clear();
-
-        foreach (var dataset in datasets.Where(ds => ds.Selected))
-        {
-            try
-            {
-                plot.Plot.Add.Scatter(dataset.TimeArray, dataset.ValueArray)
-                            .LegendText = $"Channel {dataset.ChannelName}";
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error plotting dataset: {ex.Message}");
-            }
-        }
     }
 
     private void FocusOnData()
@@ -75,90 +103,104 @@ public class GraphGenerator
     public void CreateCustomChannel(DataSet newChannel)
     {
         datasets.Add(newChannel);
+        AddScatterPlot(newChannel);
+        markersAndAnnotations[newChannel.ChannelName] = new List<IPlottable>();
         UpdateGraph();
+    }
+
+    private void HighlightPoint(string channelName, double x, double y, string legendText, bool isVisible)
+    {
+        if (!markersAndAnnotations.ContainsKey(channelName))
+        {
+            markersAndAnnotations[channelName] = new List<IPlottable>();
+        }
+
+        var marker = plot.Plot.Add.Marker(x, y);
+        marker.LegendText = legendText;
+        marker.IsVisible = isVisible;
+        markersAndAnnotations[channelName].Add(marker);
+
+        var txt = plot.Plot.Add.Text(x.ToString("F1"), x, y);
+        txt.IsVisible = isVisible;
+        markersAndAnnotations[channelName].Add(txt);
     }
 
     public void HighlightPoints(string channelName, ComparisonOperator comparisonOperator, double thresholdValue)
     {
-        var dataset = datasets.FirstOrDefault(ds => ds.ChannelName == channelName && ds.Selected);
+        var dataset = datasets.FirstOrDefault(ds => ds.ChannelName == channelName);
         if (dataset == null)
             return;
 
-        bool foundFirstPoint = false;
-        bool foundInterpolatedPoint = false;
+        bool foundFixedPoint = false;
+        bool foundLinePoint = false;
+        bool isVisible = dataset.Selected;
 
-        // Find the first exact point where the condition is met
+        double? fixedPointX = null;
+        double? fixedPointY = null;
+        int fixedPointIndex = -1;
+
+        
         for (int i = 0; i < dataset.ValueArray.Length; i++)
         {
-            bool conditionMet = false;
-            switch (comparisonOperator)
+            bool conditionMet = comparisonOperator switch
             {
-                case ComparisonOperator.LessThan:
-                    conditionMet = dataset.ValueArray[i] < thresholdValue;
-                    break;
-                case ComparisonOperator.GreaterThan:
-                    conditionMet = dataset.ValueArray[i] > thresholdValue;
-                    break;
-                case ComparisonOperator.EqualTo:
-                    conditionMet = dataset.ValueArray[i] == thresholdValue;
-                    break;
-                default:
-                    break;
-            }
-            if (conditionMet && !foundFirstPoint)
+                ComparisonOperator.LessThan => dataset.ValueArray[i] < thresholdValue,
+                ComparisonOperator.GreaterThan => dataset.ValueArray[i] > thresholdValue,
+                ComparisonOperator.EqualTo => dataset.ValueArray[i] == thresholdValue,
+                _ => false
+            };
+
+            if (conditionMet && !foundFixedPoint)
             {
-                HighlightPoint(dataset.TimeArray[i], dataset.ValueArray[i], $"{comparisonOperator} {thresholdValue} ({channelName}) - Fixed Point");
-                foundFirstPoint = true;
+                fixedPointX = dataset.TimeArray[i];
+                fixedPointY = dataset.ValueArray[i];
+                fixedPointIndex = i;
+                foundFixedPoint = true;
             }
         }
 
-        // Find the first interpolated point where the line crosses the threshold value
+        
         for (int i = 0; i < dataset.TimeArray.Length - 1; i++)
         {
-            if (!foundInterpolatedPoint &&
-                ((dataset.ValueArray[i] < thresholdValue && dataset.ValueArray[i + 1] > thresholdValue) ||
-                 (dataset.ValueArray[i] > thresholdValue && dataset.ValueArray[i + 1] < thresholdValue)))
+            if (!foundLinePoint)
             {
-                double interpolatedTime = InterpolateCrossing(dataset.TimeArray[i], dataset.ValueArray[i], dataset.TimeArray[i + 1], dataset.ValueArray[i + 1], thresholdValue);
-                HighlightPoint(interpolatedTime, thresholdValue, $"{comparisonOperator} {thresholdValue} ({channelName}) - Interpolated");
-                foundInterpolatedPoint = true;
+                double x0 = dataset.TimeArray[i];
+                double y0 = dataset.ValueArray[i];
+                double x1 = dataset.TimeArray[i + 1];
+                double y1 = dataset.ValueArray[i + 1];
+
+                
+                if ((y0 - thresholdValue) * (y1 - thresholdValue) <= 0)
+                {
+                    double interpolatedTime = InterpolateCrossing(x0, y0, x1, y1, thresholdValue);
+
+                    
+                    if (fixedPointX != null && fixedPointY != null && fixedPointX.Value > interpolatedTime)
+                    {
+                        HighlightPoint(channelName, fixedPointX.Value, fixedPointY.Value, $"{comparisonOperator} {thresholdValue} (Channel {channelName}) - Fixed Point", isVisible);
+                        HighlightPoint(channelName, interpolatedTime, thresholdValue, $"{comparisonOperator} {thresholdValue} (Channel {channelName}) - Interpolated", isVisible);
+                        foundLinePoint = true;
+                    }
+                    else if (fixedPointX == null || fixedPointY == null)
+                    {
+                        HighlightPoint(channelName, interpolatedTime, thresholdValue, $"{comparisonOperator} {thresholdValue} (Channel {channelName}) - Interpolated", isVisible);
+                        foundLinePoint = true;
+                    }
+                }
             }
         }
+        if (fixedPointX != null && fixedPointY != null && foundFixedPoint && !foundLinePoint)
+        {
+            HighlightPoint(channelName, fixedPointX.Value, fixedPointY.Value, $"{comparisonOperator} {thresholdValue} (Channel {channelName}) - Fixed Point", isVisible);
+        }
+
+        RefreshPlot();
     }
+
 
     private double InterpolateCrossing(double x0, double y0, double x1, double y1, double thresholdValue)
     {
         return x0 + (x1 - x0) * (thresholdValue - y0) / (y1 - y0);
     }
 
-    public enum ComparisonOperator
-    {
-    LessThan,
-    GreaterThan,
-    EqualTo
-    }
-    private void AddMarker(double x, double y, string legendText)
-    {
-        plot.Plot.Add.Marker(x, y).LegendText = legendText;
-    }
-
-    private void AddText(double x, double y)
-    {
-        string formattedTime = x.ToString("F1"); // Format time to one decimal place
-        var txt = plot.Plot.Add.Text(formattedTime, x, y);
-        txt.LabelFontSize = 16;
-        txt.LabelBorderColor = Colors.Black;
-        txt.LabelBorderWidth = 1;
-        txt.LabelPadding = 2;
-        txt.LabelBold = true;
-    }
-
-    private void HighlightPoint(double x, double y, string legendText)
-    {
-        AddMarker(x, y, legendText);
-        AddText(x, y);
-    }
-
 }
-
-

@@ -2,7 +2,6 @@ using System.Linq;
 using System;
 using Data.Models;
 using MathNet.Numerics.Interpolation;
-using System.Windows.Controls.Primitives;
 
 
 public class DataSetResult
